@@ -301,6 +301,7 @@ function fmtInfoSection.content() {
     fmtPrint.lineB;
     fmtPrint.blank;
     fmtIndent.open && fmtPrint.content "${CONTENT}";
+    fmtIndent.close
     fmtPrint.blank;
     fmtPrint.lineB;
 }
@@ -328,6 +329,7 @@ function fmtErrorSection.content() {
     fmtPrint.lineB;
     fmtPrint.blank;
     fmtIndent.open && fmtPrint.content "${CONTENT}";
+    fmtIndent.close
     fmtPrint.blank;
     fmtPrint.lineB;
 }
@@ -355,6 +357,7 @@ function fmtWarningSection.content() {
     fmtPrint.lineB;
     fmtPrint.blank;
     fmtIndent.open && fmtPrint.content "${CONTENT}";
+    fmtIndent.close
     fmtPrint.blank;
     fmtPrint.lineB;
 }
