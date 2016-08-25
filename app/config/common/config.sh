@@ -1,0 +1,1 @@
+export appCode="admin-tools"
