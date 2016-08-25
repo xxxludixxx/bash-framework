@@ -1,0 +1,10 @@
+# Base Base
+/core/commands/core-upgrade/version.sh
+/app/config/dimensions.sh
+/modman
+.modman
+.deploy/
+
+# Admin Tools
+
+/nbproject/
