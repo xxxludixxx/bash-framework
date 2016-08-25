@@ -1,193 +1,3 @@
-########################################### VARIABLES DECLARATION ######################################################
-
-#function declareVariables() {                               # Declares necessary variables
-#    declare -a -g STATE_MACHINE_BOLD=( );
-#    declare -a -g STATE_MACHINE_ITALIC=( );
-#    declare -a -g STATE_MACHINE_UNDERLINE=( );
-#    declare -a -g STATE_MACHINE_COLOR=( );
-#    declare -a -g STATE_MACHINE_BACKGROUND=( );
-#    declare -a -g STATE_MACHINE_INDENT=( );
-##    declare STATE_MACHINE_LIST=0;
-#
-#}
-
-######################################################### TESTS ########################################################
-
-function isBold() {
-    ARG_NUMBER="${#STATE_MACHINE_BOLD[@]}"
-    if [[ ${ARG_NUMBER} == 0 ]]; then
-        echo 1
-    else
-        echo 0
-    fi
-}
-
-function isItalic() {
-    ARG_NUMBER="${#STATE_MACHINE_ITALIC[@]}"
-    if [[ ${ARG_NUMBER} == 0 ]]; then
-        echo 1
-    else
-        echo 0
-    fi
-}
-function isUnderline() {
-    ARG_NUMBER=`echo ${#STATE_MACHINE_UNDERLINE[@]}`
-    if [[ ${ARG_NUMBER} == 0 ]]; then
-        echo 1
-    else
-        echo 0
-    fi
-}
-
-function isColor() {
-    ARG_NUMBER=`echo ${#STATE_MACHINE_COLOR[@]}`
-    if [[ ${ARG_NUMBER} == 0 ]]; then
-        echo 1
-    else
-        echo 0
-    fi
-}
-
-function isBackground() {
-    ARG_NUMBER=`echo ${#STATE_MACHINE_BACKGROUND[@]}`
-    if [[ ${ARG_NUMBER} == 0 ]]; then
-        echo 1
-    else
-        echo 0
-    fi
-}
-
-function isIndent() {
-    ARG_NUMBER=`echo ${#STATE_MACHINE_INDENT[@]}`
-    if [[ ${ARG_NUMBER} == 0 ]]; then
-        echo 1
-    else
-        echo 0
-    fi
-}
-
-function isList() {
-    ARG_NUMBER=`echo ${#STATE_MACHINE_LIST[@]}`
-    if [[ ${ARG_NUMBER} == 0 ]]; then
-        echo 1
-    else
-        echo 0
-    fi
-}
-
-################################################## PRINTING ############################################################
-
-function fmtPrint.content() {                                   # This function prints the given string of text
-    local TEXT="${*}";                                          # formatted according to attributes values
-    local PREFIX="\e[";
-    local SUFFIX="\e[0m";
-    local IS_BOLD=`isBold`;
-    local IS_ITALIC=`isItalic`;
-    local IS_UNDERLINE=`isUnderline`;
-    local IS_COLOR=`isColor`;
-    local IS_BACKGROUND=`isBackground`;
-    local IS_INDENT=`isIndent`;
-
-
-    if [[ "${IS_BOLD}" == 0 ]]; then
-        PREFIX="${PREFIX}${PRE_BOLD}"
-    fi;
-
-    if [[ "${IS_ITALIC}" == 0 ]]; then
-        PREFIX="${PREFIX};${PRE_ITALIC}"
-    fi
-
-    if [[ "${IS_UNDERLINE}" == 0 ]]; then
-        PREFIX="${PREFIX};${PRE_UNDERLINE}"
-    fi
-
-    if [[ "${IS_COLOR}" == 0 ]]; then
-        local COLOR=`echo ${STATE_MACHINE_COLOR[-1]}`
-        local PRE_COLOR=PRE_COLOR_$COLOR
-
-        PREFIX="${PREFIX};${!PRE_COLOR}"
-    fi
-
-    if [[ "${IS_BACKGROUND}" == 0 ]]; then
-        local BACKGROUND=`echo ${STATE_MACHINE_BACKGROUND[-1]}`
-        local PRE_BACKGROUND=PRE_BACKGROUND_$BACKGROUND
-
-        PREFIX="${PREFIX};${!PRE_BACKGROUND}"
-    fi
-
-    if [[ "${IS_INDENT}" == 0 ]]; then
-        local INDENTION=`echo ${STATE_MACHINE_INDENT[-1]}`
-        local PRE_INDENT=PRE_INDENT_$INDENTION
-
-        PREFIX="${!PRE_INDENT}${PREFIX}"
-    fi
-
-    local PRINT_TEXT="${PREFIX}m${TEXT}${SUFFIX}";
-    echo -e "${PRINT_TEXT}";
-}
-
-function fmtPrint.blank() {                                     # Prints an empty line
-    echo -e ""
-}
-
-function fmtPrint.uppercase() {                                 # Prints a string transformed into uppercase
-#    CONTENT=$(
-#        for i in "${*}"; do
-#            echo "${i^^}"
-#        done
-#    );
-#
-#    echo "${CONTENT^^}"
-    echo "${*^^}";
-}
-
-function fmtPrint.lowercase() {                                 # Prints a string transformed into lowercase
-    echo "${1,,}";
-}
-
-function fmtPrint.capitalize() {                                # Prints a string transformed into capitalized
-    echo "${1^}";
-
-}
-
-function fmtPrint.lineA() {                                     # Prints first type of section line --------
-    local start=$'\e(0' end=$'\e(B' line='qqqqqqqqqqqqqqqq';
-    local cols=${COLUMNS:-$(tput cols)};
-
-    while ((${#line} < cols)); do line+="$line"; done;
-    printf '%s%s%s\n' "$start" "${line:0:cols}" "$end";
-}
-
-function fmtPrint.lineB() {                                     # Prints second type of section line =======
-    local start=$'\e(0' end=$'\e(B' line='================';
-    local cols=${COLUMNS:-$(tput cols)};
-
-    while ((${#line} < cols)); do line+="$line"; done;
-    printf '%s%s%s\n' "$start" "${line:0:cols}" "$end";
-}
-
-function fmtPrint.lineC() {                                     # Prints third type of section line ________
-    local start=$'\e(0' end=$'\e(B' line='_______________';
-    local cols=${COLUMNS:-$(tput cols)};
-
-    while ((${#line} < cols)); do line+="$line"; done;
-    printf '%s%s%s\n' "$start" "${line:0:cols}" "$end";
-}
-
-function fmtPrint.lineD() {                                     # Prints fourth type of section line -  -  -  -
-    local start=$'\e(0' end=$'\e(B' line='-  -  -  -  -  ';
-    local cols=${COLUMNS:-$(tput cols)};
-
-    while ((${#line} < cols)); do line+="$line"; done;
-    printf '%s%s%s\n' "$start" "${line:0:cols}" "$end";
-}
-
-######################################################### RESET ########################################################
-
-function fmtResetFormatting() {                                 # Resets formatting for the given attribute
-   stateMachine.drop ${1};
-}
-
 ################################################## FONT FORMATTING #####################################################
 
 
@@ -274,6 +84,175 @@ function fmtBackground.close() {                            # Restores previous 
     stateMachine.pop BACKGROUND
 }
 
+################################################## PRINTING ############################################################
+
+function fmtPrint.content() {                                   # This function prints the given string of text
+    local TEXT="${*}";                                          # formatted according to attributes values
+    local PREFIX="\e[";
+    local SUFFIX="\e[0m";
+    local IS_BOLD=`isBold`;
+    local IS_ITALIC=`isItalic`;
+    local IS_UNDERLINE=`isUnderline`;
+    local IS_COLOR=`isColor`;
+    local IS_BACKGROUND=`isBackground`;
+    local IS_INDENT=`isIndent`;
+
+
+    if [[ "${IS_BOLD}" == 0 ]]; then
+        PREFIX="${PREFIX}${PRE_BOLD}"
+    fi;
+
+    if [[ "${IS_ITALIC}" == 0 ]]; then
+        PREFIX="${PREFIX};${PRE_ITALIC}"
+    fi
+
+    if [[ "${IS_UNDERLINE}" == 0 ]]; then
+        PREFIX="${PREFIX};${PRE_UNDERLINE}"
+    fi
+
+    if [[ "${IS_COLOR}" == 0 ]]; then
+        local COLOR=`echo ${STATE_MACHINE_COLOR[-1]}`
+        local PRE_COLOR=PRE_COLOR_$COLOR
+
+        PREFIX="${PREFIX};${!PRE_COLOR}"
+    fi
+
+    if [[ "${IS_BACKGROUND}" == 0 ]]; then
+        local BACKGROUND=`echo ${STATE_MACHINE_BACKGROUND[-1]}`
+        local PRE_BACKGROUND=PRE_BACKGROUND_$BACKGROUND
+
+        PREFIX="${PREFIX};${!PRE_BACKGROUND}"
+    fi
+
+    if [[ "${IS_INDENT}" == 0 ]]; then
+        local INDENTION=`echo ${STATE_MACHINE_INDENT[-1]}`
+        local PRE_INDENT=PRE_INDENT_$INDENTION
+
+        PREFIX="${!PRE_INDENT}${PREFIX}"
+    fi
+
+    local PRINT_TEXT="${PREFIX}m${TEXT}${SUFFIX}";
+    echo -e "${PRINT_TEXT}";
+}
+
+function fmtPrint.blank() {                                     # Prints an empty line
+    echo -e ""
+}
+
+function fmtPrint.uppercase() {                                 # Prints a string transformed into uppercase
+    echo "${*^^}";
+}
+
+function fmtPrint.lowercase() {                                 # Prints a string transformed into lowercase
+    echo "${*,,}";
+}
+
+function fmtPrint.capitalize() {                                # Prints a string transformed into capitalized
+    echo "${*^}";
+}
+
+function fmtPrint.lineA() {                                     # Prints first type of section line --------
+    local start=$'\e(0' end=$'\e(B' line='qqqqqqqqqqqqqqqq';
+    local cols=${COLUMNS:-$(tput cols)};
+
+    while ((${#line} < cols)); do line+="$line"; done;
+    printf '%s%s%s\n' "$start" "${line:0:cols}" "$end";
+}
+
+function fmtPrint.lineB() {                                     # Prints second type of section line =======
+    local start=$'\e(0' end=$'\e(B' line='================';
+    local cols=${COLUMNS:-$(tput cols)};
+
+    while ((${#line} < cols)); do line+="$line"; done;
+    printf '%s%s%s\n' "$start" "${line:0:cols}" "$end";
+}
+
+function fmtPrint.lineC() {                                     # Prints third type of section line ________
+    local start=$'\e(0' end=$'\e(B' line='_______________';
+    local cols=${COLUMNS:-$(tput cols)};
+
+    while ((${#line} < cols)); do line+="$line"; done;
+    printf '%s%s%s\n' "$start" "${line:0:cols}" "$end";
+}
+
+function fmtPrint.lineD() {                                     # Prints fourth type of section line -  -  -  -
+    local start=$'\e(0' end=$'\e(B' line='-  -  -  -  -  ';
+    local cols=${COLUMNS:-$(tput cols)};
+
+    while ((${#line} < cols)); do line+="$line"; done;
+    printf '%s%s%s\n' "$start" "${line:0:cols}" "$end";
+}
+
+######################################################### RESET ########################################################
+
+function fmtResetFormatting() {                                 # Resets formatting for the given attribute
+   stateMachine.drop ${1};
+}
+
+######################################################### TESTS ########################################################
+
+function isBold() {
+    ARG_NUMBER="${#STATE_MACHINE_BOLD[@]}"
+    if [[ ${ARG_NUMBER} == 0 ]]; then
+        echo 1
+    else
+        echo 0
+    fi
+}
+
+function isItalic() {
+    ARG_NUMBER="${#STATE_MACHINE_ITALIC[@]}"
+    if [[ ${ARG_NUMBER} == 0 ]]; then
+        echo 1
+    else
+        echo 0
+    fi
+}
+function isUnderline() {
+    ARG_NUMBER=`echo ${#STATE_MACHINE_UNDERLINE[@]}`
+    if [[ ${ARG_NUMBER} == 0 ]]; then
+        echo 1
+    else
+        echo 0
+    fi
+}
+
+function isColor() {
+    ARG_NUMBER=`echo ${#STATE_MACHINE_COLOR[@]}`
+    if [[ ${ARG_NUMBER} == 0 ]]; then
+        echo 1
+    else
+        echo 0
+    fi
+}
+
+function isBackground() {
+    ARG_NUMBER=`echo ${#STATE_MACHINE_BACKGROUND[@]}`
+    if [[ ${ARG_NUMBER} == 0 ]]; then
+        echo 1
+    else
+        echo 0
+    fi
+}
+
+function isIndent() {
+    ARG_NUMBER=`echo ${#STATE_MACHINE_INDENT[@]}`
+    if [[ ${ARG_NUMBER} == 0 ]]; then
+        echo 1
+    else
+        echo 0
+    fi
+}
+
+function isList() {
+    ARG_NUMBER=`echo ${#STATE_MACHINE_LIST[@]}`
+    if [[ ${ARG_NUMBER} == 0 ]]; then
+        echo 1
+    else
+        echo 0
+    fi
+}
+
 ################################################### TEXT ALIGNMENT #####################################################
 
 function fmtIndent.open() {                                    # Create the next level of indention
@@ -302,7 +281,7 @@ function fmtAlign.right() {
 # Information section
 function fmtInfoSection() {
     local HEADER="${1}";
-    local CONTENT="${2}";
+    local CONTENT="${@:2}";
 
     fmtInfoSection.header "${HEADER}";
     fmtInfoSection.content "${CONTENT}";
@@ -311,8 +290,10 @@ function fmtInfoSection() {
 function fmtInfoSection.header() {
     local CONTENT=`fmtPrint.uppercase "${*}"`;
 
+    fmtPrint.lineB;
     fmtPrint.blank;
     fmtAlign.center $( fmtBackgroundGreen.open && fmtBold.open && fmtPrint.content "${CONTENT}" );
+    fmtPrint.blank;
 }
 
 function fmtInfoSection.content() {
@@ -327,7 +308,7 @@ function fmtInfoSection.content() {
 # Error section
 function fmtErrorSection() {
     local HEADER="${1}";
-    local CONTENT="${2}";
+    local CONTENT="${@:2}";
 
     fmtErrorSection.header "${HEADER}";
     fmtErrorSection.content "${CONTENT}";
@@ -336,8 +317,10 @@ function fmtErrorSection() {
 function fmtErrorSection.header() {
     local CONTENT=`fmtPrint.uppercase "${*}"`;
 
+    fmtPrint.lineB;
     fmtPrint.blank;
     fmtAlign.center $( fmtBackgroundRed.open && fmtBold.open && fmtPrint.content "${CONTENT}" );
+    fmtPrint.blank;
 }
 
 function fmtErrorSection.content() {
@@ -352,7 +335,7 @@ function fmtErrorSection.content() {
 # Warning section
 function fmtWarningSection() {
     local HEADER="${1}";
-    local CONTENT="${2}";
+    local CONTENT="${@:2}";
 
     fmtWarningSection.header "${HEADER}";
     fmtWarningSection.content "${CONTENT}";
@@ -361,8 +344,10 @@ function fmtWarningSection() {
 function fmtWarningSection.header() {
     local CONTENT=`fmtPrint.uppercase "${*}"`;
 
+    fmtPrint.lineB;
     fmtPrint.blank;
     fmtAlign.center $( fmtColorGray.open && fmtBackgroundYellow.open && fmtBold.open && fmtPrint.content "${CONTENT}" );
+    fmtPrint.blank;
 }
 
 function fmtWarningSection.content() {
@@ -374,56 +359,11 @@ function fmtWarningSection.content() {
     fmtPrint.lineB;
 }
 
+# List
+function fmtList.open() {
+    STATE_MACHINE_LIST
+}
 
-#function fmtH1.warning() {
-#    fmtAlign.center `fmtColorYellow.open && fmtBold.open && fmtPrint "${1^^}"`;
-#    fmtSectionLine;
-#}
-#
-#function fmtH2() {
-#    fmtColorReversed.open && fmtBold.open;
-#    fmtPrint "${1^^}";
-#    fmtSectionLine;
-#}
-#
-#function fmtH3() {
-#    fmtColorGray.open && fmtBackgroundWhite.open && fmtPrint "${1}";
-#}
-#
-#function fmtH1() {
-#    local string="${1^^}";
-#
-#    fmtBold.open;
-#    fmtColorGreen;
-#    fmtSectionLine;
-#    fmtAlign.center "${string}";
-#    fmtSectionLine;
-#    fmtDefault;
-#
-#}
-#
-#function fmtH2() {
-#    local string="${1}";
-#
-#    fmtBold.open;
-#    fmtItalic.open;
-#    fmtColorRed;
-#    fmtSectionLine;
-#    fmtAlign.center "${string}";
-#    fmtSectionLine;
-#    fmtDefault;
-#}
-#
-#function fmtH3() {
-#    local string="${1^^}";
-#
-#    fmtBold.open;
-#    fmtSectionLine;
-#    echo -e "${string}";
-#    fmtSectionLine;
-#    fmtDefault;
-#}
-#
 ######################################################### LOGOS ########################################################
 
 function logo() {
