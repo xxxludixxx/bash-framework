@@ -78,7 +78,7 @@ function isList() {
 ################################################## PRINTING ############################################################
 
 function fmtPrint.content() {                                   # This function prints the given string of text
-    local TEXT="${1}";                                          # formatted according to attributes values
+    local TEXT="${*}";                                          # formatted according to attributes values
     local PREFIX="\e[";
     local SUFFIX="\e[0m";
     local IS_BOLD=`isBold`;
@@ -150,7 +150,7 @@ function fmtPrint.capitalize() {                                # Prints a strin
 
 }
 
-function fmtPrint.lineA() {                                     # Prints first type of section line
+function fmtPrint.lineA() {                                     # Prints first type of section line --------
     local start=$'\e(0' end=$'\e(B' line='qqqqqqqqqqqqqqqq';
     local cols=${COLUMNS:-$(tput cols)};
 
@@ -158,7 +158,7 @@ function fmtPrint.lineA() {                                     # Prints first t
     printf '%s%s%s\n' "$start" "${line:0:cols}" "$end";
 }
 
-function fmtPrint.lineB() {                                     # Prints second type of section line
+function fmtPrint.lineB() {                                     # Prints second type of section line =======
     local start=$'\e(0' end=$'\e(B' line='================';
     local cols=${COLUMNS:-$(tput cols)};
 
@@ -166,15 +166,15 @@ function fmtPrint.lineB() {                                     # Prints second 
     printf '%s%s%s\n' "$start" "${line:0:cols}" "$end";
 }
 
-function fmtPrint.lineC() {                                     # Prints third type of section line
-    local start=$'\e(0' end=$'\e(B' line='----------------';
+function fmtPrint.lineC() {                                     # Prints third type of section line ________
+    local start=$'\e(0' end=$'\e(B' line='_______________';
     local cols=${COLUMNS:-$(tput cols)};
 
     while ((${#line} < cols)); do line+="$line"; done;
     printf '%s%s%s\n' "$start" "${line:0:cols}" "$end";
 }
 
-function fmtPrint.lineD() {                                     # Prints fourth type of section line
+function fmtPrint.lineD() {                                     # Prints fourth type of section line -  -  -  -
     local start=$'\e(0' end=$'\e(B' line='-  -  -  -  -  ';
     local cols=${COLUMNS:-$(tput cols)};
 
@@ -285,7 +285,7 @@ function fmtIndent.close() {                                   # Restores previo
 }
 function fmtAlign.center() {
     local columns="$(tput cols)";
-    local string="${1}";
+    local string="${*}";
 
     printf "%*s\n" $(((${columns} + ${#string}) / 2)) "${string}";
 }
@@ -299,42 +299,82 @@ function fmtAlign.right() {
 
 ################################################## Predefined styles ###################################################
 
-function fmtSectionHeader() {
-    CONTENT=$(
-        for i in "${*}"; do
-            echo "${i}"
-        done
-    );
+# Information section
+function fmtInfoSection() {
+    local HEADER="${1}";
+    local CONTENT="${2}";
 
-#    fmtColorGreen.open && fmtBold.open && fmtPrint.content `fmtPrint.uppercase "${@}"`
-    fmtColorGreen.open && fmtBold.open && fmtPrint.content `fmtPrint.uppercase "${CONTENT}"`
+    fmtInfoSection.header "${HEADER}";
+    fmtInfoSection.content "${CONTENT}";
 }
 
-#
-#function fmtInfoBox() {
-#    local heading="${1}";
-#    local content="${2}";
-#    local columns="$(tput cols)";
-#    local rows="$(tput lines)";
-#    local boxWidth=$((${columns} / 2));
-#    local boxHeight=$((${rows} / 2));
-#
-#    whiptail --title "${heading}" --msgbox "${content}" "${boxHeight}" "${boxWidth}";
-#}
-#
-#function fmtH1.info() {
-#    local VAR=`echo "${1^^}"`
-#    local CONTENT=`fmtColorGreen.open && fmtBold.open && fmtPrint "${VAR}"`;
-#
-#    fmtAlign.center "$CONTENT";
-#    fmtSectionLine;
-#}
-#
-#function fmtH1.alert() {
-#    fmtAlign.center `fmtColorRed.open && fmtBold.open && fmtPrint ${1^^}`;
-#    fmtSectionLine;
-#}
-#
+function fmtInfoSection.header() {
+    local CONTENT=`fmtPrint.uppercase "${*}"`;
+
+    fmtPrint.blank;
+    fmtAlign.center $( fmtBackgroundGreen.open && fmtBold.open && fmtPrint.content "${CONTENT}" );
+}
+
+function fmtInfoSection.content() {
+    local CONTENT=`fmtPrint.capitalize "${*}"`;
+    fmtPrint.lineB;
+    fmtPrint.blank;
+    fmtIndent.open && fmtPrint.content "${CONTENT}";
+    fmtPrint.blank;
+    fmtPrint.lineB;
+}
+
+# Error section
+function fmtErrorSection() {
+    local HEADER="${1}";
+    local CONTENT="${2}";
+
+    fmtErrorSection.header "${HEADER}";
+    fmtErrorSection.content "${CONTENT}";
+}
+
+function fmtErrorSection.header() {
+    local CONTENT=`fmtPrint.uppercase "${*}"`;
+
+    fmtPrint.blank;
+    fmtAlign.center $( fmtBackgroundRed.open && fmtBold.open && fmtPrint.content "${CONTENT}" );
+}
+
+function fmtErrorSection.content() {
+    local CONTENT=`fmtPrint.capitalize "${*}"`;
+    fmtPrint.lineB;
+    fmtPrint.blank;
+    fmtIndent.open && fmtPrint.content "${CONTENT}";
+    fmtPrint.blank;
+    fmtPrint.lineB;
+}
+
+# Warning section
+function fmtWarningSection() {
+    local HEADER="${1}";
+    local CONTENT="${2}";
+
+    fmtWarningSection.header "${HEADER}";
+    fmtWarningSection.content "${CONTENT}";
+}
+
+function fmtWarningSection.header() {
+    local CONTENT=`fmtPrint.uppercase "${*}"`;
+
+    fmtPrint.blank;
+    fmtAlign.center $( fmtColorGray.open && fmtBackgroundYellow.open && fmtBold.open && fmtPrint.content "${CONTENT}" );
+}
+
+function fmtWarningSection.content() {
+    local CONTENT=`fmtPrint.capitalize "${*}"`;
+    fmtPrint.lineB;
+    fmtPrint.blank;
+    fmtIndent.open && fmtPrint.content "${CONTENT}";
+    fmtPrint.blank;
+    fmtPrint.lineB;
+}
+
+
 #function fmtH1.warning() {
 #    fmtAlign.center `fmtColorYellow.open && fmtBold.open && fmtPrint "${1^^}"`;
 #    fmtSectionLine;

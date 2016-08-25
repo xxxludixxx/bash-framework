@@ -1,5 +1,4 @@
 #MAIN VARIABLES
-# Declares necessary variables
     declare -a -g STATE_MACHINE_BOLD=( );
     declare -a -g STATE_MACHINE_ITALIC=( );
     declare -a -g STATE_MACHINE_UNDERLINE=( );
