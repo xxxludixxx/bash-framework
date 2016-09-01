@@ -69,7 +69,7 @@ function fmtBackgroundYellow.open() {                       # Enables yellow bac
     stateMachine.push BACKGROUND YELLOW
 }
 function fmtBackgroundBlue.open() {                         # Enables blue background color
-        stateMachine.push BACKGROUND BLUE
+    stateMachine.push BACKGROUND BLUE
 }
 function fmtBackgroundPurple.open() {                       # Enables purple background color
     stateMachine.push BACKGROUND PURPLE
@@ -139,16 +139,16 @@ function fmtPrint.blank() {                                     # Prints an empt
     echo -e ""
 }
 
+function fmtPrint.capitalize() {                                # Prints a string transformed into capitalized
+    echo "${*^}";
+}
+
 function fmtPrint.uppercase() {                                 # Prints a string transformed into uppercase
     echo "${*^^}";
 }
 
 function fmtPrint.lowercase() {                                 # Prints a string transformed into lowercase
     echo "${*,,}";
-}
-
-function fmtPrint.capitalize() {                                # Prints a string transformed into capitalized
-    echo "${*^}";
 }
 
 function fmtPrint.lineA() {                                     # Prints first type of section line --------
@@ -185,8 +185,14 @@ function fmtPrint.lineD() {                                     # Prints fourth 
 
 ######################################################### RESET ########################################################
 
-function fmtResetFormatting() {                                 # Resets formatting for the given attribute
-   stateMachine.drop ${1};
+function fmtResetFormatting() {                                 # Resets formatting for the given attributes
+    declare -a -g STATE_MACHINE_BOLD=( );
+    declare -a -g STATE_MACHINE_ITALIC=( );
+    declare -a -g STATE_MACHINE_UNDERLINE=( );
+    declare -a -g STATE_MACHINE_COLOR=( );
+    declare -a -g STATE_MACHINE_BACKGROUND=( );
+    declare -a -g STATE_MACHINE_INDENT=( );
+    declare -a -g STATE_MACHINE_LIST=( );
 }
 
 ######################################################### TESTS ########################################################
@@ -300,8 +306,7 @@ function fmtInfoSection.content() {
     local CONTENT=`fmtPrint.capitalize "${*}"`;
     fmtPrint.lineB;
     fmtPrint.blank;
-    fmtIndent.open && fmtPrint.content "${CONTENT}";
-    fmtIndent.close
+    fmtPrint.content "${CONTENT}";
     fmtPrint.blank;
     fmtPrint.lineB;
 }
@@ -363,13 +368,17 @@ function fmtWarningSection.content() {
 }
 
 # List
-function fmtList.open() {
-    STATE_MACHINE_LIST
-}
+#function fmtList.open() {
+#    stateMachine.push LIST "${1}"
+#
+#}
+#
+#fmtList.close() {
+#    stateMachine.pop LIST
+#}
+######################################################## LOGOS ########################################################
 
-######################################################### LOGOS ########################################################
-
-function logo() {
+function fmtPrint.logo() {
     local cols="$(tput cols)";
 
     if [ "${cols}" -le 202 ];

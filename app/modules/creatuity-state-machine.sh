@@ -51,7 +51,6 @@ function stateMachine.drop() {                                  # Drops the exis
     : ${1? 'Missing attribute name'}                            # Error status for missing attribute name
 
     local attribute="${1^^}";                                   # Function's local variables
-    local value="${2^^}";                                       #
     local arrayName="STATE_MACHINE_${attribute}";               #
 
     eval "unset ${arrayName}";

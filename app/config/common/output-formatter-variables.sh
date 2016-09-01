@@ -5,7 +5,7 @@
     declare -a -g STATE_MACHINE_COLOR=( );
     declare -a -g STATE_MACHINE_BACKGROUND=( );
     declare -a -g STATE_MACHINE_INDENT=( );
-#    declare STATE_MACHINE_LIST=0;
+    declare -a -g STATE_MACHINE_LIST=( );
 #BOLD,ITALIC,UNDERLINE
     PRE_BOLD="1";
     PRE_ITALIC="3";
